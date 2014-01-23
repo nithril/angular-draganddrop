@@ -3,7 +3,13 @@ angular-draganddrop
 
 AngularJS drag&amp;drop module. The dragged element is rendered with a dedicated AngularJS controller. This controller and the associated view is fully customizable.
 
-This modules contains 2 directives: drop, drag
+This modules contains 
+- 2 directives: `drop`, `drag`
+- 1 service : `dragAndDrop`
+- 2 controller : `DragAndDropController`, `DragAndDropItemController`
+
+
+## Directive
 
 ### `drag` directive
 
@@ -34,3 +40,20 @@ This modules contains 2 directives: drop, drag
 <section drop drop-callback="endDrop">
 </section>
 ```
+
+
+## `dragAndDrop` Service
+
+This service stores transfered data. 
+Why a `map`? I have planned to add support for multi touch.
+
+## Controllers
+
+Controllers handles dragged item rendering. 
+Why a `ngRepeat`  I have planned to add support for multi touch.
+
+
+
+
+
+
