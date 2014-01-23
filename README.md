@@ -9,6 +9,8 @@ This modules contains
 - 2 controllers: `DragAndDropController` and `DragAndDropItemController`
 
 
+[You could find here a sample](http://plnkr.co/edit/o2YCbCDS6ZXfykSGAkL4?p=preview)
+
 ## Directives
 
 ### `drag` directive
