@@ -1,96 +1,80 @@
-<html ng-app="admin">
+<html ng-app="dragAndDrop">
 <head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
 
 
+  <style>
 
-    <style>
     * {
-        font-family: "Open Sans";
+      font-family: Arial;
     }
 
-    .columnDrag {
-        opacity: 0.7;
-        background-color: blue;
+    section {
+      border: 1px solid gray;
+      border-radius: 5px;
     }
 
-    .columnDrop {
-        background-color: green;
+    li div {
+      display: table-cell;
+      vertical-align: top;
     }
 
-    header.mainMenu {
-        position: fixed;
-        top: 0px;
-        background: rgba(255, 255, 255, 0.8);
-        height: 50px;
-        width: 100%
-    }
-
-    header.mainMenu .lilactu {
-        font-size: 40px;
-        font-family: Sigmar One;
-        padding-right: 100px
-    }
-
-    header .menu {
-        padding-right: 50px;
-        color: #757575
-    }
-
-    fieldset {
-        padding-bottom: 10px;
-    }
-
-    td {
-        padding: 5px;
-    }
-    </style>
+  </style>
 
 
-
-  <script src="../bower_components/angular/angular.js"></script>
-    <title></title>
+  <title></title>
 </head>
 
 <body>
 
+<div ng-controller="SampleController">
+  <section>
+    <header>Drag section</header>
+    <ul>
+      <li ng-repeat="item in itemsDrag" drag drop-callback="endDrag($index)" drag-data="item">
 
-<div style="padding-top: 60px" ng-controller="SampleController">
-    <div>
-        <div ng-repeat="item in items" drag drop-callback="endDrag($index)" drag-data="item" drag-style="columnDrag"
-            drop-style="columnDrop" style="border: 1px solid gray;border-radius: 4px;width:400px">
-            {{item.title}}
+        <div>
+          <img src="{{item.url}}"/>
         </div>
-    </div>
-
-    <hr/>
-
-    <div drop drop-data="item" drop-callback="endDrop" drag-style="columnDrag" drop-style="columnDrop" style="border:1px solid black;padding: 10px">
-        <div ng-repeat="item in items2" style="border: 1px solid gray;border-radius: 4px">
-            {{item.title}}
+        <div>
+          <strong>{{item.title}}</strong>:<span>{{item.description}}</span>
         </div>
-    </div>
+      </li>
+    </ul>
+  </section>
 
-    <div>dragged {{dragged}}</div>
 
-    <div>dropped {{dropped}}</div>
-
+  <section drop drop-callback="endDrop">
+    <header>Drop section</header>
+    <ul>
+      <li ng-repeat="item in itemsDrop">
+        <div>
+          <img src="{{item.url}}"/>
+        </div>
+        <div>
+          <strong>{{item.title}}</strong>:<span>{{item.description}}</span>
+        </div>
+      </li>
+    </ul>
+  </section>
 </div>
 
 
-
-<script src="../src/my-project-name.js" type="application/javascript"></script>
-
-
 <div ng-controller="DragAndDropController">
-  {{items}}-{{left}}-{{top}}
-  <div ng-repeat='(key, value) in items'>
-    <div ng-controller="DragAndDropItemController" ng-init="init(value.data)" style="width:{{value.width}};height:{{value.height}} ; top: {{top}};left: {{left}};position:fixed">
-      <div style="border: 1px solid gray;border-radius: 5px">
+  <div ng-repeat='(key, value) in items' ng-controller="DragAndDropItemController" ng-init="init(value.data)"
+       style="position:absolute;visibility: hidden">
+    <div style="width: 100%">
+      <img src="{{data.url}}"/>
+      <div style="position: absolute;top:0px;left: 0px;background: rgba(255,255,255,0.8);width: 100%">
         {{data.title}}
       </div>
     </div>
   </div>
 </div>
+
+
+<script src="../bower_components/angular/angular.js"></script>
+<script src="../src/draganddrop.js" type="application/javascript"></script>
 
 
 </body>

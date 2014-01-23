@@ -1,62 +1,48 @@
-var app = angular.module('admin', []);
+var app = angular.module('dragAndDrop', []);
 
 
-function DragAndDropItemController($scope, $rootScope, dragAndDrop) {
+function DragAndDropItemController($scope, $rootScope, dragAndDrop, $element,$document) {
+
     $scope.init = function (data) {
         $scope.data = data;
     }
+
+    $document.bind('mousemove', function (event) {
+        $element.css({
+            top : event.pageY + 5,
+            left : event.pageX + 5,
+            visibility:"visible"
+        });
+    });
+
 }
 
 function DragAndDropController($scope, $rootScope, dragAndDrop, $document) {
     $scope.items = dragAndDrop.datas;
-
-    $scope.left = 0;
-    $scope.top = 0;
-
-    $document.bind('mousemove', function (event) {
-        $scope.$apply(function () {
-            $scope.top = event.pageY + 5;
-            $scope.left = event.pageX + 5;
-        });
-    });
 }
 
 
 function SampleController($scope, $http) {
-    $scope.items = [
-        {title: "a"},
-        {title: "b"},
-        {title: "c"}
+    $scope.itemsDrag = [
+        {title: "Meliphaga notata" , description:"Le Méliphage marqué (Meliphaga notata) est une espèce de passereau de la famille des Meliphagidae.",
+            url : "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Meliphaga_notata_-_Daintree_Village.jpg/290px-Meliphaga_notata_-_Daintree_Village.jpg"},
+        {title: "Meliphaga lewinii" , description:"Le Méliphage de Lewin (Meliphaga lewinii) est une espèce de passereau de la famille des Meliphagidae. Il habite les montagnes le long de la côte est de l'Australie. Il a une tache semi-circulaire de couleur jaune pâle au niveau des oreilles.",
+            url: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Lewins_Honeyeater_kobble_apr06.jpg/290px-Lewins_Honeyeater_kobble_apr06.jpg"},
+        {title: "Meliphaga gracilis" , description:"Le Méliphage gracile (Meliphaga gracilis) est une espèce de passereau de la famille des Meliphagidae.",
+            url:"https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Meliphaga_gracilis_-_Julatten.jpg/290px-Meliphaga_gracilis_-_Julatten.jpg"}
     ];
 
-    $scope.items2 = [];
+    $scope.itemsDrop = [];
 
-    $scope.dragged = null;
-
-    $scope.dropped = null;
-
-    $scope.myFilter = function (search) {
-        return function (site) {
-
-            if (search && search.zeroEntry != null) {
-                if (search.zeroEntry) {
-                    return !site.histogram.maxEntry;
-                } else {
-                    return true;
-                }
-            } else {
-                return true;
-            }
-
-        }
-    }
 
     $scope.endDrag = function (data) {
-        $scope.items.splice(data, 1);
+        console.log("endDrag " + data);
+        $scope.itemsDrag.splice(data, 1);
     }
 
     $scope.endDrop = function (data) {
-        $scope.items2.push(angular.copy(data));
+        console.log("endDrop " + data);
+        $scope.itemsDrop.push(angular.copy(data));
     }
 
 }
