@@ -4,12 +4,12 @@ angular-draganddrop
 AngularJS drag&amp;drop module. The dragged element is rendered with a dedicated AngularJS controller. This controller and the associated view is fully customizable.
 
 This modules contains 
-- 2 directives: `drop`, `drag`
-- 1 service : `dragAndDrop`
-- 2 controller : `DragAndDropController`, `DragAndDropItemController`
+- 2 directives: `drag` and `drop`
+- 1 service: `dragAndDrop`
+- 2 controllers: `DragAndDropController` and `DragAndDropItemController`
 
 
-## Directive
+## Directives
 
 ### `drag` directive
 
