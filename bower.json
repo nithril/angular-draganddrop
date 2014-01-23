@@ -1,5 +1,5 @@
 {
-    "name": "angular-drag-drop",
+    "name": "draganddrop",
     "dependencies": {
         "angular": "1.2.9"
     }

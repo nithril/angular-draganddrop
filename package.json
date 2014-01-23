@@ -2,7 +2,7 @@
   "author": {
     "name": "Nicolas Labrot"
   },
-  "name": "angular-drag-drop",
+  "name": "draganddrop",
   "version": "0.1.0",
   "devDependencies": {
     "grunt": "~0.4.2",
