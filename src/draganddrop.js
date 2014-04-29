@@ -1,35 +1,55 @@
 var app = angular.module('dragAndDrop', []);
 
 
-app.controller("DragAndDropItemController" , ['$scope', '$element','$document' , function($scope, $element, $document){
+/**
+ * Controller for dragged item
+ */
+app.controller("DragAndDropItemController", ['$scope', '$element', '$document' , function ($scope, $element, $document) {
 
     $scope.init = function (data) {
         $scope.data = data;
     }
 
-    var mousemove =function (event) {
+    //dragged item follows mouse
+    var mousemove = function (event) {
         $element.css({
-            top : event.pageY + 5,
-            left : event.pageX + 5,
-            visibility:"visible"
+            top: event.pageY + 5,
+            left: event.pageX + 5,
+            visibility: "visible"
         });
     }
-
     $document.bind('mousemove', mousemove);
 
-    $scope.$on("$destroy", function() {
+    $scope.$on("$destroy", function () {
         $document.unbind('mousemove', mousemove);
     });
 }]);
 
-app.controller("DragAndDropController" , ['$scope', 'dragAndDrop', '$document' , function($scope, dragAndDrop, $document){
+/**
+ * Controller for all dragged items
+ */
+app.controller("DragAndDropController", ['$scope', 'dragAndDrop', '$document' , function ($scope, dragAndDrop, $document) {
+
+    //mouse up : d&d ended, remove the associated data
+    var mouseUp = function (evt) {
+        $scope.$apply(function () {
+            dragAndDrop.removeData("mouse");
+        });
+    }
+
+    $document.bind('mouseup', mouseUp);
+
+    $scope.$on("$destroy", function () {
+        $document.unbind('mouseup', mouseUp);
+    });
 
     $scope.items = dragAndDrop.datas;
 }]);
 
 
-
-
+/**
+ * Drag&Drop service, holds dragged item data
+ */
 app.factory('dragAndDrop', function () {
 
     var Service = function () {
@@ -50,7 +70,9 @@ app.factory('dragAndDrop', function () {
     }
 
     Service.prototype.removeData = function (id) {
-        delete this.datas[id];
+        if (this.datas[id]) {
+            delete this.datas[id];
+        }
     }
 
     Service.prototype.hasData = function (id) {
@@ -64,13 +86,12 @@ app.factory('dragAndDrop', function () {
 
 app.directive("drop", ['$rootScope', "dragAndDrop", function ($rootScope, dragAndDrop) {
 
-
     return {
         restrict: 'A',
         link: function (scope, element, attrs) {
 
-            var mouseUp =  function (evt) {
-                if (!dragAndDrop.hasData("mouse")){
+            var mouseUp = function (evt) {
+                if (!dragAndDrop.hasData("mouse")) {
                     return;
                 }
                 evt.stopPropagation();
@@ -87,10 +108,10 @@ app.directive("drop", ['$rootScope', "dragAndDrop", function ($rootScope, dragAn
                 });
             }
 
-            element.bind('mouseup' , mouseUp);
+            element.bind('mouseup', mouseUp);
 
-            scope.$on("$destroy", function() {
-                element.unbind('mouseup' , mouseUp);
+            scope.$on("$destroy", function () {
+                element.unbind('mouseup', mouseUp);
             });
         }
     }
@@ -114,26 +135,19 @@ app.directive("drag", ["$rootScope", "dragAndDrop", "$document", "$controller", 
                 }
             };
 
-            var mouseUp = function (evt) {
-                scope.$apply(function () {
-                    dragAndDrop.removeData("mouse");
-                });
-            }
-
             var mouseDown = function (evt) {
                 evt.preventDefault();
                 scope.$apply(function () {
                     if (attrs.dragData) {
-                        dragAndDrop.setData("mouse", scope.$eval(attrs.dragData), success,dragInclude, element[0].offsetWidth, element[0].offsetHeight);
+                        dragAndDrop.setData("mouse", scope.$eval(attrs.dragData), success, dragInclude, element[0].offsetWidth, element[0].offsetHeight);
                     }
                 });
             }
 
-            $document.bind('mouseup', mouseUp);
+
             element.bind('mousedown', mouseDown);
 
-            scope.$on("$destroy", function() {
-                $document.unbind('mouseup', mouseUp);
+            scope.$on("$destroy", function () {
                 element.unbind('mousedown', mouseDown);
             });
 
