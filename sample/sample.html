@@ -1,47 +1,42 @@
 <html ng-app="dragAndDrop">
+
 <head>
-    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 
     <link href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
 
     <style type="text/css">
-
         * {
-            font-family: Arial;
+        font-family: Arial;
         }
-
         section {
-            border: 1px solid gray;
-            border-radius: 1px;
-            margin-bottom: 10px;
+        border: 1px solid gray;
+        border-radius: 1px;
+        margin-bottom: 10px;
         }
-
         li {
-            display: inline-block;
-            width: 160px;
-            vertical-align: top;
-            margin: 5px;
-            cursor: pointer;
+        display: inline-block;
+        width: 160px;
+        vertical-align: top;
+        margin: 5px;
+        cursor: pointer;
         }
-
         li div {
-            display: table-cell;
-            vertical-align: top;
+        display: table-cell;
+        vertical-align: top;
         }
-
         .dragdrop-item-controller {
-            position: absolute;
-            visibility: hidden
+        position: absolute;
+        visibility: hidden
         }
-
     </style>
 
     <script type="text/ng-template" id="dragItemTemplate">
         <div style="box-shadow: 5px 5px 10px 0px #656565; ">
-            <img src="{{data.url}}"/>
+            <img src="{{value.data.url}}"/>
 
             <div style="position: absolute;top:0px;left: 0px;background: rgba(255,255,255,0.8);width: 100%">
-                {{data.title}}
+                {{value.data.title}}
             </div>
         </div>
     </script>
@@ -56,10 +51,9 @@
     <section>
         <header>Drag section</header>
         <ul>
-            <li ng-repeat="item in itemsDrag" drag drop-callback="endDrag($index)" drag-include="'dragItemTemplate'"
-                drag-data="item">
+            <li ng-repeat="item in itemsDrag" drag drop-callback="endDrag($index)" drag-include="'dragItemTemplate'" drag-data="item">
                 <div>
-                    <img src="{{item.url}}"/>
+                    <img src="{{item.url}}" />
                 </div>
                 <div>
                     <strong>{{item.title}}</strong>:<span>{{item.description}}</span>
@@ -74,7 +68,7 @@
         <ul>
             <li ng-repeat="item in itemsDrop">
                 <div>
-                    <img src="{{item.url}}"/>
+                    <img src="{{item.url}}" />
                 </div>
                 <div>
                     <strong>{{item.title}}</strong>:<span>{{item.description}}</span>
@@ -86,8 +80,7 @@
 
 
 <div ng-controller="DragAndDropController">
-    <div ng-repeat='(key, value) in items' ng-controller="DragAndDropItemController" ng-init="init(value.data)"
-         class="dragdrop-item-controller">
+    <div ng-repeat='(key, value) in items' ng-controller="DragAndDropItemController" ng-init="init(value)" class="dragdrop-item-controller">
         <div style="width: 100%" ng-include src="value.include">
         </div>
     </div>
@@ -95,36 +88,34 @@
 
 
 <script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-<script src="../bower_components/angular/angular.js"></script>
-<script src="../src/draganddrop.js" type="application/javascript"></script>
+<script src="http://code.angularjs.org/1.2.16/angular.js"></script>
+<script src="../src/draganddrop.js"></script>
 <script type="application/javascript">
-
-
     function SampleController($scope, $http) {
-        $scope.itemsDrag = [];
+      $scope.itemsDrag = [];
 
-        for (var i = 0; i < 15; i++) {
-            $scope.itemsDrag.push({
-                title: "Title " + i,
-                description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-                url: "http://lorempixel.com/80/80/people/" + i % 10 + "/"});
+      for (var i = 0; i < 8; i++) {
+        $scope.itemsDrag.push({
+          title: "Title " + i,
+          description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+          url: "http://lorempixel.com/80/80/people/" + i % 10 + "/"
+        });
 
-        }
+      }
 
-        $scope.itemsDrop = [];
+      $scope.itemsDrop = [];
 
 
-        $scope.endDrag = function (data) {
-            $scope.itemsDrag.splice(data, 1);
-        }
+      $scope.endDrag = function(data) {
+        $scope.itemsDrag.splice(data, 1);
+      }
 
-        $scope.endDrop = function (data) {
-            $scope.itemsDrop.push(angular.copy(data));
-        }
+      $scope.endDrop = function(data) {
+        $scope.itemsDrop.push(angular.copy(data));
+      }
 
     }
-
-</script>
+  </script>
 
 </body>
 
