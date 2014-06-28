@@ -1,33 +1,43 @@
 <html ng-app="dragAndDrop">
 
 <head>
-    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
 
     <link href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
 
     <style type="text/css">
         * {
-        font-family: Arial;
+            font-family: Calibri, Candara, Segoe, "Segoe UI", Optima, Arial, sans-serif;
         }
+
         section {
-        border: 1px solid gray;
-        border-radius: 1px;
-        margin-bottom: 10px;
+            border: 1px solid gray;
+            border-radius: 1px;
+            margin-bottom: 10px;
         }
+
+        ul {
+            padding-left: 10px;
+        }
+
         li {
-        display: inline-block;
-        width: 160px;
-        vertical-align: top;
-        margin: 5px;
-        cursor: pointer;
+            display: inline-block;
+            width: 160px;
+            vertical-align: top;
+            margin: 5px;
+            cursor: pointer;
+            box-shadow: 5px 5px 5px 0px #656565;
         }
+
         li div {
-        display: table-cell;
-        vertical-align: top;
+            display: table-cell;
+            vertical-align: top;
+
         }
+
         .dragdrop-item-controller {
-        position: absolute;
-        visibility: hidden
+            position: absolute;
+            visibility: hidden
         }
     </style>
 
@@ -47,13 +57,14 @@
 
 <body>
 
-<div ng-controller="SampleController">
-    <section>
-        <header>Drag section</header>
+<div class="row">
+    <section class="col-md-4" ng-controller="DraggableController">
+        <h3>Drag section</h3>
         <ul>
-            <li ng-repeat="item in itemsDrag" drag drop-callback="endDrag($index)" drag-include="'dragItemTemplate'" drag-data="item">
+            <li ng-repeat="item in itemsDrag" drag drop-callback="endDrag($index)" drag-include="'dragItemTemplate'"
+                drag-model="item">
                 <div>
-                    <img src="{{item.url}}" />
+                    <img src="{{item.url}}"/>
                 </div>
                 <div>
                     <strong>{{item.title}}</strong>:<span>{{item.description}}</span>
@@ -63,12 +74,29 @@
     </section>
 
 
-    <section drop drop-callback="endDrop">
-        <header>Drop section</header>
+    <section ng-controller="Drop1Controller" drop drop-callback="endDrop" drop-mouse-enter="dropClass='bg-info'"
+             drop-mouse-leave="dropClass=''" class="col-md-4 {{dropClass}}">
+        <h3>Drop section with highlight</h3>
         <ul>
-            <li ng-repeat="item in itemsDrop">
+            <li ng-repeat="item in itemsDrop" data-count="{{$index}}">
                 <div>
-                    <img src="{{item.url}}" />
+                    <img src="{{item.url}}"/>
+                </div>
+                <div>
+                    <strong>{{item.title}}</strong>:<span>{{item.description}}</span>
+                </div>
+            </li>
+        </ul>
+    </section>
+
+
+    <section ng-controller="Drop2Controller" drop drop-callback="endDrop" drop-mouse-move="mouseMove"
+             drop-mouse-leave="mouseLeave" class="col-md-4">
+        <h3>Drop section with live insertion</h3>
+        <ul id="dropcontainer">
+            <li ng-repeat="item in insertDraggedItem(itemsDrop)" data-count="{{$index}}">
+                <div>
+                    <img src="{{item.url}}"/>
                 </div>
                 <div>
                     <strong>{{item.title}}</strong>:<span>{{item.description}}</span>
@@ -80,7 +108,8 @@
 
 
 <div ng-controller="DragAndDropController">
-    <div ng-repeat='(key, value) in items' ng-controller="DragAndDropItemController" ng-init="init(value)" class="dragdrop-item-controller">
+    <div ng-repeat='(key, value) in items' ng-controller="DragAndDropItemController" ng-init="init(value)"
+         class="dragdrop-item-controller">
         <div style="width: 100%" ng-include src="value.include">
         </div>
     </div>
@@ -88,34 +117,94 @@
 
 
 <script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-<script src="http://code.angularjs.org/1.2.16/angular.js"></script>
+<script src="https://code.angularjs.org/1.2.16/angular.js"></script>
 <script src="../src/draganddrop.js"></script>
 <script type="application/javascript">
-    function SampleController($scope, $http) {
-      $scope.itemsDrag = [];
-
-      for (var i = 0; i < 8; i++) {
-        $scope.itemsDrag.push({
-          title: "Title " + i,
-          description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-          url: "http://lorempixel.com/80/80/people/" + i % 10 + "/"
-        });
-
-      }
-
-      $scope.itemsDrop = [];
 
 
-      $scope.endDrag = function(data) {
-        $scope.itemsDrag.splice(data, 1);
-      }
+    function DraggableController($scope) {
+        $scope.itemsDrag = [];
 
-      $scope.endDrop = function(data) {
-        $scope.itemsDrop.push(angular.copy(data));
-      }
+        for (var i = 0; i < 8; i++) {
+            $scope.itemsDrag.push({
+                title: "Title " + i,
+                description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+                url: "./img/" + ((i % 8) + 1) + ".jpg"
+            });
+        }
+
+        $scope.endDrag = function (data) {
+            $scope.itemsDrag.splice(data, 1);
+        };
+    }
+
+
+    function Drop1Controller($scope) {
+        $scope.itemsDrop = [];
+
+        $scope.endDrop = function (data) {
+            $scope.itemsDrop.push(angular.copy(data));
+            $scope.dropClass='';
+        }
+    }
+
+
+    function Drop2Controller($scope, $http) {
+
+        $scope.itemsDrop = [];
+        $scope.insertedIndex = -1;
+        $scope.inserted = null;
+
+
+        $scope.endDrop = function (data) {
+            if ($scope.insertedIndex >= 0) {
+                $scope.itemsDrop.splice($scope.insertedIndex, 0, $scope.inserted);
+            } else {
+                $scope.itemsDrop.push(angular.copy(data));
+            }
+            $scope.insertedIndex = -1;
+        };
+
+
+        $scope.insertDraggedItem = function (data) {
+            var cloned = data.slice(0);
+            if ($scope.insertedIndex >= 0) {
+                cloned.splice($scope.insertedIndex, 0, $scope.inserted);
+            }
+            return cloned;
+        };
+
+
+        $scope.mouseLeave = function (evt, data) {
+            $scope.insertedIndex = -1;
+        };
+
+        $scope.mouseMove = function (evt, data) {
+            var $container = angular.element(document.getElementById("dropcontainer"));
+
+            var $ite = angular.element(evt.target);
+
+            while ($ite.length > 0 && $ite.attr("data-count") == null) {
+                $ite = $ite.parent()
+            }
+
+            if ($ite.length > 0 && $scope.insertedIndex == $ite.attr("data-count")) {
+                return;
+            }
+
+            if ($scope.itemsDrop.length == 0) {
+                $scope.inserted = angular.copy(data.data);
+                $scope.insertedIndex = 0;
+            } else if ($ite.length > 0) {
+                console.log($ite.attr("data-count"));
+                $scope.inserted = angular.copy(data.data);
+                $scope.insertedIndex = $ite.attr("data-count");
+            }
+
+        };
 
     }
-  </script>
+</script>
 
 </body>
 
