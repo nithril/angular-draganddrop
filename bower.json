@@ -1,6 +1,17 @@
 {
-    "name": "draganddrop",
+    "name": "angular-native-draganddrop",
+    "version": "1.0.0",
+    "authors": [
+        {
+            "name": "Nicolas Labrot",
+            "homepage": "https://github.com/nithril/angular-draganddrop"
+        }
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/nithril/angular-draganddrop.git"
+    },
     "dependencies": {
-        "angular": "1.2.16"
+        "angular": "1.2.X"
     }
 }
